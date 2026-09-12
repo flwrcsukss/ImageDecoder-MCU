@@ -1,0 +1,440 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #f0f2f5;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #333;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ============================================
+   КОЛОНКИ - ОДИНАКОВАЯ ВЫСОТА
+   ============================================ */
+
+.grid-2col {
+    display: flex;
+    gap: 20px;
+    align-items: stretch; /* Растягиваем колонки по высоте */
+}
+
+.grid-2col > div {
+    flex: 1; /* Обе колонки занимают одинаковое пространство */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 0; /* Чтобы контент не вылезал */
+}
+
+/* Левая колонка */
+.grid-2col > div:first-child {
+    flex: 1;
+}
+
+/* Правая колонка - с прокруткой */
+.grid-2col > div:last-child {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 600px; /* Ограничиваем высоту */
+    padding-right: 10px;
+    scroll-behavior: smooth;
+}
+
+/* Красивый скроллбар */
+.grid-2col > div:last-child::-webkit-scrollbar {
+    width: 6px;
+}
+
+.grid-2col > div:last-child::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.grid-2col > div:last-child::-webkit-scrollbar-thumb {
+    background: #007acc;
+    border-radius: 3px;
+}
+
+.grid-2col > div:last-child::-webkit-scrollbar-thumb:hover {
+    background: #005a9e;
+}
+
+@media (max-width: 768px) {
+    .grid-2col {
+        flex-direction: column;
+    }
+    .grid-2col > div:last-child {
+        max-height: 400px;
+    }
+}
+
+/* ============================================
+   UPLOAD AREA
+   ============================================ */
+
+.upload-area {
+    border: 2px dashed #ccc;
+    padding: 30px;
+    text-align: center;
+    border-radius: 8px;
+    transition: all 0.3s;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.upload-area:hover {
+    border-color: #007acc;
+    background: #f0f8ff;
+}
+
+.upload-area.dragover {
+    border-color: #007acc;
+    background: #e3f2fd;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+/* ============================================
+   КНОПКИ
+   ============================================ */
+
+.btn {
+    background: #007acc;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: #005a9e;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: #dc3545;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-success {
+    background: #28a745;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #333;
+}
+
+.btn-warning:hover {
+    background: #e0a800;
+}
+
+.btn-purple {
+    background: #6f42c1;
+    color: white;
+}
+
+.btn-purple:hover {
+    background: #5a32a3;
+}
+
+/* ============================================
+   ИНФОРМАЦИЯ О ФАЙЛЕ
+   ============================================ */
+
+#info {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #007acc;
+    flex-shrink: 0;
+}
+
+#info h3 {
+    margin-top: 0;
+    color: #007acc;
+    font-size: 16px;
+}
+
+#fileInfo {
+    font-size: 14px;
+    line-height: 1.6;
+    word-wrap: break-word;
+}
+
+/* ============================================
+   ПРЕВЬЮ - ФИКСИРОВАННЫЙ РАЗМЕР
+   ============================================ */
+
+.preview-container {
+    text-align: center;
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 10px;
+    flex-shrink: 0;
+}
+
+.preview-container img {
+    max-width: 100%;
+    max-height: 250px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+}
+
+/* ============================================
+   СТАТИСТИКА
+   ============================================ */
+
+#statsContainer {
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+#statsContainer h3 {
+    margin-top: 0;
+    font-size: 16px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.stat-card {
+    background: white;
+    padding: 10px 6px;
+    border-radius: 6px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card .value {
+    font-size: 16px;
+    font-weight: bold;
+    color: #007acc;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.stat-card .label {
+    font-size: 10px;
+    color: #666;
+}
+
+/* ============================================
+   НАСТРОЙКИ
+   ============================================ */
+
+.settings-panel {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.settings-panel label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.settings-panel input,
+.settings-panel select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.settings-panel input:focus,
+.settings-panel select:focus {
+    border-color: #007acc;
+    outline: none;
+}
+
+.settings-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+
+
+
+
+
+.pixel-table {
+    padding-top: 2em;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.table-paint {
+    margin: 20px;
+
+}
+
+/* table {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+tr {
+    margin: 0;
+    padding: 0;
+    border: 0;
+} */
+
+td {
+    background-color: black;
+    height: 5px;
+    width: 5px;
+    margin: 0;
+    padding: 0;
+    border: 0px white solid;
+}
+
+
+
+
+
+
+@media (max-width: 600px) {
+    .settings-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   ВЫВОД КОДА - ОПТИМИЗИРОВАННЫЙ
+   ============================================ */
+
+.code-output {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    max-height: 500px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-top: 15px;
+    position: relative;
+    line-height: 1.6;
+}
+
+.code-output pre {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* ============================================
+   КОНСОЛЬ
+   ============================================ */
+
+.console-log {
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    margin-top: 15px;
+}
+
+.console-log .log-entry {
+    padding: 2px 0;
+    border-bottom: 1px solid #2d2d2d;
+}
+
+.console-log .log-entry:last-child {
+    border-bottom: none;
+}
+
+/* ============================================
+   КНОПКИ В РЯД
+   ============================================ */
+
+.flex-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.flex-row .btn {
+    flex: 0 0 auto;
+}
+
+/* ============================================
+   АДАПТИВНОСТЬ
+   ============================================ */
+
+@media (max-width: 768px) {
+    .grid-2col {
+        flex-direction: column;
+    }
+
+    .grid-2col > div:last-child {
+        max-height: 400px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+
+    .preview-container img {
+        max-height: 200px;
+    }
+}

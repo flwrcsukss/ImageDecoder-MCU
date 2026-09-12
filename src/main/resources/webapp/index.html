@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конвертер изображений в TFT-код</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>
+        <span>Конвертер в TFT-код</span>
+        <span style="font-size:14px; font-weight:normal; color:#666;">для микроконтроллеров</span>
+    </h1>
+    <p>Загрузите изображение → настройте шаблон → получите готовый код для TFT-дисплея</p>
+
+    <!-- Область загрузки -->
+    <div class="upload-area" id="dropZone">
+        <p>Перетащите файл сюда или нажмите для выбора</p>
+        <input type="file" id="fileInput" accept="image/*">
+        <br><br>
+        <button class="btn" onclick="document.getElementById('fileInput').click()">Выбрать файл</button>
+    </div>
+
+    <!-- ДВЕ КОЛОНКИ - ОДИНАКОВАЯ ВЫСОТА -->
+    <div class="grid-2col">
+        <!-- ЛЕВАЯ КОЛОНКА: Настройки -->
+        <div>
+            <div class="settings-panel">
+                <h3>Настройки генерации кода</h3>
+
+                <label>Шаблон строки:</label>
+                <input type="text" id="templateInput"
+                       value="tft.drawPixel({x}, {y}, {color});">
+                <small style="color:#666;">Используйте {x}, {y}, {color} как переменные</small>
+
+                <div class="settings-row">
+                    <div>
+                        <label>Формат цвета:</label>
+                        <select id="colorFormat">
+                            <option value="tft">TFT 0xXXXX (0x0000)</option>
+                            <option value="hex">HEX #RRGGBB</option>
+                            <option value="rgb">RGB(r,g,b)</option>
+                            <option value="rgba">RGBA(r,g,b,a)</option>
+                            <option value="tft_565">TFT 16-bit (RGB565)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Шаг пикселей:</label>
+                        <input type="number" id="pixelStep" value="1" min="1" max="100">
+                        <small style="color:#666;">Берите каждый N-й пиксель</small>
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div>
+                        <label>Начать с X:</label>
+                        <input type="number" id="startX" value="0" min="0">
+                    </div>
+                    <div>
+                        <label>Начать с Y:</label>
+                        <input type="number" id="startY" value="0" min="0">
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <div>
+                        <label>Макс. X (0 = все):</label>
+                        <input type="number" id="maxX" value="0" min="0">
+                    </div>
+                    <div>
+                        <label>Макс. Y (0 = все):</label>
+                        <input type="number" id="maxY" value="0" min="0">
+                    </div>
+                </div>
+
+                <label style="margin-top:10px;">
+                    <input type="checkbox" id="includeComments" disabled>
+                    Добавить комментарии в код
+                </label>
+            </div>
+
+
+            <div class="flex-row" style="margin:10px 0;">
+                <button class="btn-success">Сгенерировать</button>
+                <button class="btn btn-warning">Копировать</button>
+                <button class="btn btn-purple">Скачать</button>
+                <button class="btn btn-danger">Очистить</button>
+                <button class="test-button">Тестовая кнопка</button>
+            </div>
+        </div>
+
+        <!-- ПРЕВЬЮ -->
+        <div>
+            <div id="info">
+                <h3>Информация о файле</h3>
+                <div id="fileInfo">Файл не выбран</div>
+            </div>
+
+            <div class="preview-container" id="previewContainer">
+                <h3>Превью</h3>
+                <img id="previewImage" alt="Preview">
+            </div>
+
+            <div id="statsContainer" style="display:none;">
+                <h3>Статистика пикселей</h3>
+                <div class="stats-grid" id="statsGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ВЫВОД КОДА -->
+    <div style="margin-top:20px;">
+        <div class="flex-row" style="justify-content:space-between;">
+            <h3>Сгенерированный код</h3>
+            <span id="codeStats" style="color:#666;font-size:13px;"></span>
+        </div>
+        <div class="code-output" id="codeOutput">
+            <pre style="color:#858585;margin:0;">// Загрузите изображение и нажмите "Сгенерировать код"</pre>
+        </div>
+    </div>
+
+    <!-- КОНСОЛЬ -->
+    <div style="margin-top:20px;">
+        <div class="flex-row" style="justify-content:space-between;">
+            <h3>Лог</h3>
+            <button class="btn btn-danger" onclick="clearConsole()" style="padding:5px 15px;font-size:12px;">Очистить</button>
+        </div>
+        <div class="console-log" id="consoleLog">
+            <div class="log-entry">Ожидание загрузки файла...</div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Эмуляция экрана -->
+<div class="pixel-table">
+    <h1>Эмуляция экрана</h1>
+
+    <div style="margin: 10px; box-sizing: border-box; width: 100%;">
+
+                <textarea
+                        style="width: 100%; height: 300px; left: 100px; border-radius: 6px;
+                    resize: vertical; box-sizing: border-box;
+                    background-color: rgb(30, 30, 30); color: white; font-size: 22px;"></textarea>
+
+        <div class="console-buttons" style="display: flex; justify-content: flex-end;">
+
+            <button style="background-color: rgb(40, 167, 69); width: 160px; height: 39px;
+                        font-size: 14px; border-radius: 6px; border: none;" class="execute-button">
+                Выполнить
+            </button>
+
+
+
+        </div>
+
+
+    </div>
+
+
+<!--    <div class="">-->
+<!--        <label> Количество пикселей по X </label>-->
+<!--        <input type="number" value="0" min="0" class="table-width">-->
+<!--        <label> Количество пикселей по Y </label>-->
+<!--        <input type="number" value="0" min="0" class="table-height">-->
+<!--    </div>-->
+
+<!--    <div class="table-paint">-->
+<!--        <table style="border: 3px black solid; ">-->
+
+<!--        </table>-->
+<!--    </div>-->
+
+    <div>
+        <canvas width="500" height="500" style="border: solid 2px black" class="pixelCanvas">
+
+        </canvas>
+    </div>
+
+
+</div>
+
+</div>
+
+</div>
+
+    <script src="script.js"></script>
+    <script src="table.js"></script>
+</body>
+
+</html>
